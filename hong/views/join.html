@@ -17,5 +17,52 @@
         <input type="submit" value="회원가입">
         <a href="/">홈으로</a>
     </form>
+
+    <script>
+        let valid = false;
+
+        const checkID = document.getElementById('checkID');
+        const userID = document.getElementById('userID');
+
+        userID.addEventListener('change', function() {
+            valid = false;
+        }, false);
+
+        checkID.addEventListener('click', (e) => {
+            const id = userID.value;
+            var xhr = new  XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState === 4) {
+                    if(xhr.status === 200) {
+                        const data = JSON.parse(xhr.responseText);
+                        console.log(data.cnt);
+                        if(data.cnt > 0) {
+                            alert("중복된 아이디입니다.");
+                            valid = false;
+                        } else {
+                            alert("사용가능한 아이디입니다.");
+                            valid = true;
+                        }
+                    } else {
+                        console.log("연결 실패");
+                    }
+                }
+            }
+
+            var url = "/checkID?id=" + userID.value;
+            xhr.open("get", url, true);
+            xhr.send();
+        }, false);
+
+        const form = document.getElementById('form');
+        form.addEventListener('submit', send, false);
+
+        function send(e) {
+            console.log("전송안함");
+            if(!valid) {
+                e.preventDefault();
+            }
+        }
+    </script>
 </body>
 </html>
